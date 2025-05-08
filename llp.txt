@@ -1,0 +1,1095 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main() {
+    int choice;
+    printf("Choose Linked List Type:\n");
+    printf("1. Singly Linked List\n");
+    printf("2. Doubly Linked List\n");
+    printf("3. Circular Singly Linked List\n");
+    printf("4. Circular Doubly Linked List\n");
+    printf("5.exit\n");
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+
+    switch (choice) {
+
+    // ============= 1. SINGLY LINKED LIST =============
+
+ case 1: {
+    struct Patient {
+        int id;
+        char name[50];
+        int age;
+        char disease[50];
+        struct Patient *next;
+    } *head = NULL, *temp, *newPatient, *ptr;
+
+    int id, pos, i, searchId;
+    char ch, name[50], disease[50];
+    int age;
+
+    // CREATE
+    do {
+        newPatient = (struct Patient *)malloc(sizeof(struct Patient));
+        printf("Enter Patient ID: ");
+        scanf("%d", &newPatient->id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", newPatient->name);
+        printf("Enter Age: ");
+        scanf("%d", &newPatient->age);
+        printf("Enter Disease: ");
+        scanf(" %[^\n]", newPatient->disease);
+
+        newPatient->next = NULL;
+
+        if (head == NULL) {
+            head = newPatient;
+        } else {
+            temp = head;
+            while (temp->next != NULL)
+                temp = temp->next;
+            temp->next = newPatient;
+        }
+
+        printf("Do you want to create another patient (y/n)? ");
+        scanf(" %c", &ch);
+    } while (ch == 'y' || ch == 'Y');
+
+    // DISPLAY
+    printf("\nCurrent Patients:\n");
+    temp = head;
+    while (temp != NULL) {
+        printf("ID: %d | Name: %s | Age: %d | Disease: %s\n",
+               temp->id, temp->name, temp->age, temp->disease);
+        temp = temp->next;
+    }
+
+    // INSERT at beginning
+    printf("\nInsert patient at beginning (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        newPatient = (struct Patient *)malloc(sizeof(struct Patient));
+        printf("Enter Patient ID: ");
+        scanf("%d", &newPatient->id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", newPatient->name);
+        printf("Enter Age: ");
+        scanf("%d", &newPatient->age);
+        printf("Enter Disease: ");
+        scanf(" %[^\n]", newPatient->disease);
+        newPatient->next = head;
+        head = newPatient;
+    }
+
+    // INSERT at end
+    printf("Insert patient at end (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        newPatient = (struct Patient *)malloc(sizeof(struct Patient));
+        printf("Enter Patient ID: ");
+        scanf("%d", &newPatient->id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", newPatient->name);
+        printf("Enter Age: ");
+        scanf("%d", &newPatient->age);
+        printf("Enter Disease: ");
+        scanf(" %[^\n]", newPatient->disease);
+        newPatient->next = NULL;
+        temp = head;
+        while (temp->next != NULL)
+            temp = temp->next;
+        temp->next = newPatient;
+    }
+
+    // INSERT at any position
+    printf("Insert patient at any position (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        printf("Enter position: ");
+        scanf("%d", &pos);
+        newPatient = (struct Patient *)malloc(sizeof(struct Patient));
+        printf("Enter Patient ID: ");
+        scanf("%d", &newPatient->id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", newPatient->name);
+        printf("Enter Age: ");
+        scanf("%d", &newPatient->age);
+        printf("Enter Disease: ");
+        scanf(" %[^\n]", newPatient->disease);
+
+        if (pos == 1) {
+            newPatient->next = head;
+            head = newPatient;
+        } else {
+            temp = head;
+            for (i = 1; i < pos - 1 && temp != NULL; i++)
+                temp = temp->next;
+
+            if (temp != NULL) {
+                newPatient->next = temp->next;
+                temp->next = newPatient;
+            }
+        }
+    }
+
+    // DELETE at beginning
+    printf("Delete patient at beginning (y/n)? ");
+    scanf(" %c", &ch);
+    if ((ch == 'y' || ch == 'Y') && head != NULL) {
+        ptr = head;
+        head = head->next;
+        free(ptr);
+    }
+
+    // DELETE at end
+    printf("Delete patient at end (y/n)? ");
+    scanf(" %c", &ch);
+    if ((ch == 'y' || ch == 'Y') && head != NULL) {
+        temp = head;
+        // Traverse to the second last node
+        while (temp->next != NULL && temp->next->next != NULL)
+            temp = temp->next;
+
+        if (temp->next != NULL) {
+            ptr = temp->next;
+            temp->next = NULL;
+            free(ptr);
+        }
+    }
+
+    // DELETE at any position
+    printf("Delete patient at any position (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        printf("Enter position: ");
+        scanf("%d", &pos);
+        temp = head;
+        for (i = 1; i < pos && temp != NULL; i++)
+            temp = temp->next;
+        if (temp != NULL && temp->next != NULL) {
+            ptr = temp->next;
+            temp->next = temp->next->next;
+            free(ptr);
+        } else if (temp != NULL && pos == 1) {
+            // Deleting the first node
+            ptr = head;
+            head = head->next;
+            free(ptr);
+        }
+    }
+
+    // SEARCH
+    printf("Enter Patient ID to search: ");
+    scanf("%d", &searchId);
+    temp = head;
+    int found = 0;
+    while (temp != NULL) {
+        if (temp->id == searchId) {
+            printf("Patient Found: ID: %d | Name: %s | Age: %d | Disease: %s\n",
+                   temp->id, temp->name, temp->age, temp->disease);
+            found = 1;
+            break;
+        }
+        temp = temp->next;
+    }
+    if (!found)
+        printf("Patient not found.\n");
+
+    // UPDATE Patient details by ID
+    printf("\nDo you want to update a patient's details by ID (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        printf("Enter Patient ID to update: ");
+        scanf("%d", &searchId);
+        temp = head;
+        while (temp != NULL) {
+            if (temp->id == searchId) {
+                printf("Current details - ID: %d | Name: %s | Age: %d | Disease: %s\n",
+                       temp->id, temp->name, temp->age, temp->disease);
+                printf("Enter new Name: ");
+                scanf(" %[^\n]", temp->name);
+                printf("Enter new Age: ");
+                scanf("%d", &temp->age);
+                printf("Enter new Disease: ");
+                scanf(" %[^\n]", temp->disease);
+                printf("Patient details updated.\n");
+                found = 1;
+                break;
+            }
+            temp = temp->next;
+        }
+        if (!found)
+            printf("Patient ID not found!\n");
+    }
+
+    // SORT by ID
+    struct Patient *t1, *t2;
+    for (t1 = head; t1 != NULL; t1 = t1->next) {
+        for (t2 = t1->next; t2 != NULL; t2 = t2->next) {
+            if (t1->id > t2->id) {
+                // Swap all patient data
+                int tempId = t1->id;
+                char tempName[50], tempDisease[50];
+                int tempAge = t1->age;
+                strcpy(tempName, t1->name);
+                strcpy(tempDisease, t1->disease);
+
+                t1->id = t2->id;
+                t1->age = t2->age;
+                strcpy(t1->name, t2->name);
+                strcpy(t1->disease, t2->disease);
+
+                t2->id = tempId;
+                t2->age = tempAge;
+                strcpy(t2->name, tempName);
+                strcpy(t2->disease, tempDisease);
+            }
+        }
+    }
+
+    // FINAL DISPLAY
+    printf("\nSorted Patient List:\n");
+    temp = head;
+    while (temp != NULL) {
+        printf("ID: %d | Name: %s | Age: %d | Disease: %s\n",
+               temp->id, temp->name, temp->age, temp->disease);
+        temp = temp->next;
+    }
+
+    break;
+}
+
+
+    // ============= 2. DOUBLY LINKED LIST =============
+
+ case 2: {
+    struct Patient {
+        int id;
+        char name[50];
+        int age;
+        char disease[50];
+        struct Patient *prev, *next;
+    } *head = NULL, *temp, *newPatient, *ptr;
+
+    int id, pos, i, searchId;
+    char ch, name[50], disease[50];
+    int age;
+
+    // CREATE
+    do {
+        newPatient = (struct Patient *)malloc(sizeof(struct Patient));
+        printf("Enter Patient ID: ");
+        scanf("%d", &newPatient->id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", newPatient->name);
+        printf("Enter Age: ");
+        scanf("%d", &newPatient->age);
+        printf("Enter Disease: ");
+        scanf(" %[^\n]", newPatient->disease);
+
+        newPatient->prev = newPatient->next = NULL;
+
+        if (head == NULL) {
+            head = newPatient;
+        } else {
+            temp = head;
+            while (temp->next != NULL)
+                temp = temp->next;
+            temp->next = newPatient;
+            newPatient->prev = temp;
+        }
+
+        printf("Do you want to create another patient (y/n)? ");
+        scanf(" %c", &ch);
+    } while (ch == 'y' || ch == 'Y');
+
+    // DISPLAY
+    printf("\nCurrent Patients:\n");
+    temp = head;
+    while (temp != NULL) {
+        printf("ID: %d | Name: %s | Age: %d | Disease: %s\n",
+               temp->id, temp->name, temp->age, temp->disease);
+        temp = temp->next;
+    }
+
+    // INSERT at beginning
+    printf("\nInsert patient at beginning (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        newPatient = (struct Patient *)malloc(sizeof(struct Patient));
+        printf("Enter Patient ID: ");
+        scanf("%d", &newPatient->id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", newPatient->name);
+        printf("Enter Age: ");
+        scanf("%d", &newPatient->age);
+        printf("Enter Disease: ");
+        scanf(" %[^\n]", newPatient->disease);
+        newPatient->prev = NULL;
+        newPatient->next = head;
+        if (head != NULL)
+            head->prev = newPatient;
+        head = newPatient;
+    }
+
+    // INSERT at end
+    printf("Insert patient at end (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        newPatient = (struct Patient *)malloc(sizeof(struct Patient));
+        printf("Enter Patient ID: ");
+        scanf("%d", &newPatient->id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", newPatient->name);
+        printf("Enter Age: ");
+        scanf("%d", &newPatient->age);
+        printf("Enter Disease: ");
+        scanf(" %[^\n]", newPatient->disease);
+        newPatient->next = NULL;
+        temp = head;
+        while (temp->next != NULL)
+            temp = temp->next;
+        temp->next = newPatient;
+        newPatient->prev = temp;
+    }
+
+    // INSERT at any position
+    printf("Insert patient at any position (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        printf("Enter position: ");
+        scanf("%d", &pos);
+        newPatient = (struct Patient *)malloc(sizeof(struct Patient));
+        printf("Enter Patient ID: ");
+        scanf("%d", &newPatient->id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", newPatient->name);
+        printf("Enter Age: ");
+        scanf("%d", &newPatient->age);
+        printf("Enter Disease: ");
+        scanf(" %[^\n]", newPatient->disease);
+
+        if (pos == 1) {
+            newPatient->prev = NULL;
+            newPatient->next = head;
+            if (head != NULL)
+                head->prev = newPatient;
+            head = newPatient;
+        } else {
+            temp = head;
+            for (i = 1; i < pos - 1 && temp != NULL; i++)
+                temp = temp->next;
+
+            if (temp != NULL) {
+                newPatient->next = temp->next;
+                newPatient->prev = temp;
+                if (temp->next != NULL)
+                    temp->next->prev = newPatient;
+                temp->next = newPatient;
+            }
+        }
+    }
+
+    // DELETE at beginning
+    printf("Delete patient at beginning (y/n)? ");
+    scanf(" %c", &ch);
+    if ((ch == 'y' || ch == 'Y') && head != NULL) {
+        ptr = head;
+        head = head->next;
+        if (head != NULL)
+            head->prev = NULL;
+        free(ptr);
+    }
+
+    // DELETE at end
+    printf("Delete patient at end (y/n)? ");
+    scanf(" %c", &ch);
+    if ((ch == 'y' || ch == 'Y') && head != NULL) {
+        temp = head;
+        while (temp->next != NULL)
+            temp = temp->next;
+        if (temp->prev != NULL)
+            temp->prev->next = NULL;
+        else
+            head = NULL;
+        free(temp);
+    }
+
+    // DELETE at any position
+    printf("Delete patient at any position (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        printf("Enter position: ");
+        scanf("%d", &pos);
+        temp = head;
+        for (i = 1; i < pos && temp != NULL; i++)
+            temp = temp->next;
+        if (temp != NULL) {
+            if (temp->prev != NULL)
+                temp->prev->next = temp->next;
+            else
+                head = temp->next;
+            if (temp->next != NULL)
+                temp->next->prev = temp->prev;
+            free(temp);
+        }
+    }
+
+    // SEARCH
+    printf("Enter Patient ID to search: ");
+    scanf("%d", &searchId);
+    temp = head;
+    int found = 0;
+    while (temp != NULL) {
+        if (temp->id == searchId) {
+            printf("Patient Found: ID: %d | Name: %s | Age: %d | Disease: %s\n",
+                   temp->id, temp->name, temp->age, temp->disease);
+            found = 1;
+            break;
+        }
+        temp = temp->next;
+    }
+    if (!found)
+        printf("Patient not found.\n");
+
+    // UPDATE Patient details by ID
+    printf("\nDo you want to update a patient's details by ID (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        printf("Enter Patient ID to update: ");
+        scanf("%d", &searchId);
+        temp = head;
+        while (temp != NULL) {
+            if (temp->id == searchId) {
+                printf("Current details - ID: %d | Name: %s | Age: %d | Disease: %s\n",
+                       temp->id, temp->name, temp->age, temp->disease);
+                printf("Enter new Name: ");
+                scanf(" %[^\n]", temp->name);
+                printf("Enter new Age: ");
+                scanf("%d", &temp->age);
+                printf("Enter new Disease: ");
+                scanf(" %[^\n]", temp->disease);
+                printf("Patient details updated.\n");
+                found = 1;
+                break;
+            }
+            temp = temp->next;
+        }
+        if (!found)
+            printf("Patient ID not found!\n");
+    }
+
+    // SORT by ID
+    struct Patient *t1, *t2;
+    for (t1 = head; t1 != NULL; t1 = t1->next) {
+        for (t2 = t1->next; t2 != NULL; t2 = t2->next) {
+            if (t1->id > t2->id) {
+                // Swap all patient data
+                int tempId = t1->id;
+                char tempName[50], tempDisease[50];
+                int tempAge = t1->age;
+                strcpy(tempName, t1->name);
+                strcpy(tempDisease, t1->disease);
+
+                t1->id = t2->id;
+                t1->age = t2->age;
+                strcpy(t1->name, t2->name);
+                strcpy(t1->disease, t2->disease);
+
+                t2->id = tempId;
+                t2->age = tempAge;
+                strcpy(t2->name, tempName);
+                strcpy(t2->disease, tempDisease);
+            }
+        }
+    }
+
+    // FINAL DISPLAY
+    printf("\nSorted Patient List:\n");
+    temp = head;
+    while (temp != NULL) {
+        printf("ID: %d | Name: %s | Age: %d | Disease: %s\n",
+               temp->id, temp->name, temp->age, temp->disease);
+        temp = temp->next;
+    }
+
+    break;
+}
+
+
+    // ============= 3. CIRCULAR SINGLY LINKED LIST =============
+
+     case 3: {
+    struct Patient {
+        int id;
+        char name[50];
+        int age;
+        char disease[50];
+        struct Patient *next;
+    } *head = NULL, *temp, *newPatient, *ptr;
+
+    int id, pos, i, searchId;
+    char ch, name[50], disease[50];
+    int age;
+
+    // CREATE
+    do {
+        newPatient = (struct Patient *)malloc(sizeof(struct Patient));
+        printf("Enter Patient ID: ");
+        scanf("%d", &newPatient->id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", newPatient->name);
+        printf("Enter Age: ");
+        scanf("%d", &newPatient->age);
+        printf("Enter Disease: ");
+        scanf(" %[^\n]", newPatient->disease);
+
+        newPatient->next = newPatient; // Point to itself (circular list)
+
+        if (head == NULL) {
+            head = newPatient;
+        } else {
+            temp = head;
+            while (temp->next != head)  // Find the last node
+                temp = temp->next;
+            temp->next = newPatient;  // Link the last node to the new node
+        }
+
+        printf("Do you want to create another patient (y/n)? ");
+        scanf(" %c", &ch);
+    } while (ch == 'y' || ch == 'Y');
+
+    // DISPLAY
+    printf("\nCurrent Patients:\n");
+    if (head != NULL) {
+        temp = head;
+        do {
+            printf("ID: %d | Name: %s | Age: %d | Disease: %s\n",
+                   temp->id, temp->name, temp->age, temp->disease);
+            temp = temp->next;
+        } while (temp != head);
+    }
+
+    // INSERT at beginning
+    printf("\nInsert patient at beginning (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        newPatient = (struct Patient *)malloc(sizeof(struct Patient));
+        printf("Enter Patient ID: ");
+        scanf("%d", &newPatient->id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", newPatient->name);
+        printf("Enter Age: ");
+        scanf("%d", &newPatient->age);
+        printf("Enter Disease: ");
+        scanf(" %[^\n]", newPatient->disease);
+
+        if (head == NULL) {
+            newPatient->next = newPatient; // Circular link to itself
+            head = newPatient;
+        } else {
+            temp = head;
+            while (temp->next != head)  // Find the last node
+                temp = temp->next;
+            temp->next = newPatient;  // Link the last node to the new node
+            newPatient->next = head;  // Make it circular
+            head = newPatient;  // Set newPatient as the head
+        }
+    }
+
+    // INSERT at end
+    printf("Insert patient at end (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        newPatient = (struct Patient *)malloc(sizeof(struct Patient));
+        printf("Enter Patient ID: ");
+        scanf("%d", &newPatient->id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", newPatient->name);
+        printf("Enter Age: ");
+        scanf("%d", &newPatient->age);
+        printf("Enter Disease: ");
+        scanf(" %[^\n]", newPatient->disease);
+
+        newPatient->next = head;
+        if (head == NULL) {
+            head = newPatient;
+        } else {
+            temp = head;
+            while (temp->next != head)  // Find the last node
+                temp = temp->next;
+            temp->next = newPatient;  // Link the last node to the new node
+        }
+    }
+
+    // INSERT at any position
+    printf("Insert patient at any position (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        printf("Enter position: ");
+        scanf("%d", &pos);
+        newPatient = (struct Patient *)malloc(sizeof(struct Patient));
+        printf("Enter Patient ID: ");
+        scanf("%d", &newPatient->id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", newPatient->name);
+        printf("Enter Age: ");
+        scanf("%d", &newPatient->age);
+        printf("Enter Disease: ");
+        scanf(" %[^\n]", newPatient->disease);
+
+        if (pos == 1) {
+            newPatient->next = head;
+            temp = head;
+            while (temp->next != head)  // Find the last node
+                temp = temp->next;
+            temp->next = newPatient;  // Link the last node to the new node
+            head = newPatient;  // Set the new patient as the head
+        } else {
+            temp = head;
+            for (i = 1; i < pos - 1 && temp != NULL; i++)
+                temp = temp->next;
+            if (temp != NULL) {
+                newPatient->next = temp->next;
+                temp->next = newPatient;
+            }
+        }
+    }
+
+    // DELETE at beginning
+    printf("Delete patient at beginning (y/n)? ");
+    scanf(" %c", &ch);
+    if ((ch == 'y' || ch == 'Y') && head != NULL) {
+        ptr = head;
+        if (head->next == head) {
+            head = NULL;
+        } else {
+            temp = head;
+            while (temp->next != head)  // Find the last node
+                temp = temp->next;
+            temp->next = head->next;  // Link the last node to the second node
+            head = head->next;  // Update head
+        }
+        free(ptr);
+    }
+
+    // DELETE at end
+    printf("Delete patient at end (y/n)? ");
+    scanf(" %c", &ch);
+    if ((ch == 'y' || ch == 'Y') && head != NULL) {
+        temp = head;
+        while (temp->next != head)  // Traverse to the second last node
+            temp = temp->next;
+        if (temp != head) {
+            ptr = temp->next;
+            temp->next = head;
+            free(ptr);
+        } else {  // If only one node exists
+            free(head);
+            head = NULL;
+        }
+    }
+
+    // DELETE at any position
+    printf("Delete patient at any position (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        printf("Enter position: ");
+        scanf("%d", &pos);
+        temp = head;
+        for (i = 1; i < pos && temp != NULL; i++)
+            temp = temp->next;
+        if (temp != NULL && temp->next != head) {
+            ptr = temp->next;
+            temp->next = temp->next->next;
+            free(ptr);
+        } else if (temp != NULL && pos == 1) {
+            ptr = head;
+            while (temp->next != head)  // Find the last node
+                temp = temp->next;
+            temp->next = head->next;
+            head = head->next;
+            free(ptr);
+        }
+    }
+
+    // SEARCH
+    printf("Enter Patient ID to search: ");
+    scanf("%d", &searchId);
+    temp = head;
+    int found = 0;
+    if (head != NULL) {
+        do {
+            if (temp->id == searchId) {
+                printf("Patient Found: ID: %d | Name: %s | Age: %d | Disease: %s\n",
+                       temp->id, temp->name, temp->age, temp->disease);
+                found = 1;
+                break;
+            }
+            temp = temp->next;
+        } while (temp != head);
+    }
+    if (!found)
+        printf("Patient not found.\n");
+
+    // UPDATE Patient details by ID
+    printf("\nDo you want to update a patient's details by ID (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        printf("Enter Patient ID to update: ");
+        scanf("%d", &searchId);
+        temp = head;
+        while (temp != NULL) {
+            if (temp->id == searchId) {
+                printf("Current details - ID: %d | Name: %s | Age: %d | Disease: %s\n",
+                       temp->id, temp->name, temp->age, temp->disease);
+                printf("Enter new Name: ");
+                scanf(" %[^\n]", temp->name);
+                printf("Enter new Age: ");
+                scanf("%d", &temp->age);
+                printf("Enter new Disease: ");
+                scanf(" %[^\n]", temp->disease);
+                printf("Patient details updated.\n");
+                found = 1;
+                break;
+            }
+            temp = temp->next;
+            if (temp == head) break;
+        }
+        if (!found)
+            printf("Patient ID not found!\n");
+    }
+
+    // SORT by ID
+    struct Patient *t1, *t2;
+    for (t1 = head; t1 != NULL && t1->next != head; t1 = t1->next) {
+        for (t2 = t1->next; t2 != head; t2 = t2->next) {
+            if (t1->id > t2->id) {
+                // Swap all patient data
+                int tempId = t1->id;
+                char tempName[50], tempDisease[50];
+                int tempAge = t1->age;
+                strcpy(tempName, t1->name);
+                strcpy(tempDisease, t1->disease);
+
+                t1->id = t2->id;
+                t1->age = t2->age;
+                strcpy(t1->name, t2->name);
+                strcpy(t1->disease, t2->disease);
+
+                t2->id = tempId;
+                t2->age = tempAge;
+                strcpy(t2->name, tempName);
+                strcpy(t2->disease, tempDisease);
+            }
+        }
+    }
+
+    // FINAL DISPLAY
+    printf("\nSorted Patient List:\n");
+    if (head != NULL) {
+        temp = head;
+        do {
+            printf("ID: %d | Name: %s | Age: %d | Disease: %s\n",
+                   temp->id, temp->name, temp->age, temp->disease);
+            temp = temp->next;
+        } while (temp != head);
+    }
+
+    break;
+}
+
+
+    // ============= 4. CIRCULAR DOUBLY LINKED LIST =============
+
+case 4: {
+    struct Patient {
+        int id;
+        char name[50];
+        int age;
+        char disease[50];
+        struct Patient *next;
+        struct Patient *prev;
+    } *head = NULL, *temp, *newPatient, *ptr;
+
+    int id, pos, i, searchId;
+    char ch, name[50], disease[50];
+    int age;
+
+    // CREATE
+    do {
+        newPatient = (struct Patient *)malloc(sizeof(struct Patient));
+        printf("Enter Patient ID: ");
+        scanf("%d", &newPatient->id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", newPatient->name);
+        printf("Enter Age: ");
+        scanf("%d", &newPatient->age);
+        printf("Enter Disease: ");
+        scanf(" %[^\n]", newPatient->disease);
+
+        newPatient->next = newPatient;
+        newPatient->prev = newPatient;
+
+        if (head == NULL) {
+            head = newPatient;
+        } else {
+            temp = head;
+            while (temp->next != head) {
+                temp = temp->next;
+            }
+            temp->next = newPatient;
+            newPatient->prev = temp;
+            newPatient->next = head;
+            head->prev = newPatient;
+        }
+
+        printf("Do you want to create another patient (y/n)? ");
+        scanf(" %c", &ch);
+    } while (ch == 'y' || ch == 'Y');
+
+    // DISPLAY
+    printf("\nCurrent Patients:\n");
+    if (head != NULL) {
+        temp = head;
+        do {
+            printf("ID: %d | Name: %s | Age: %d | Disease: %s\n",
+                   temp->id, temp->name, temp->age, temp->disease);
+            temp = temp->next;
+        } while (temp != head);
+    }
+
+    // INSERT at beginning
+    printf("\nInsert patient at beginning (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        newPatient = (struct Patient *)malloc(sizeof(struct Patient));
+        printf("Enter Patient ID: ");
+        scanf("%d", &newPatient->id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", newPatient->name);
+        printf("Enter Age: ");
+        scanf("%d", &newPatient->age);
+        printf("Enter Disease: ");
+        scanf(" %[^\n]", newPatient->disease);
+
+        newPatient->next = head;
+        newPatient->prev = head->prev;
+        head->prev->next = newPatient;
+        head->prev = newPatient;
+        head = newPatient;
+    }
+
+    // INSERT at end
+    printf("Insert patient at end (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        newPatient = (struct Patient *)malloc(sizeof(struct Patient));
+        printf("Enter Patient ID: ");
+        scanf("%d", &newPatient->id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", newPatient->name);
+        printf("Enter Age: ");
+        scanf("%d", &newPatient->age);
+        printf("Enter Disease: ");
+        scanf(" %[^\n]", newPatient->disease);
+
+        newPatient->next = head;
+        newPatient->prev = head->prev;
+        head->prev->next = newPatient;
+        head->prev = newPatient;
+    }
+
+    // INSERT at any position
+    printf("Insert patient at any position (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        printf("Enter position: ");
+        scanf("%d", &pos);
+        newPatient = (struct Patient *)malloc(sizeof(struct Patient));
+        printf("Enter Patient ID: ");
+        scanf("%d", &newPatient->id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", newPatient->name);
+        printf("Enter Age: ");
+        scanf("%d", &newPatient->age);
+        printf("Enter Disease: ");
+        scanf(" %[^\n]", newPatient->disease);
+
+        if (pos == 1) {
+            newPatient->next = head;
+            newPatient->prev = head->prev;
+            head->prev->next = newPatient;
+            head->prev = newPatient;
+            head = newPatient;
+        } else {
+            temp = head;
+            for (i = 1; i < pos - 1 && temp != NULL; i++)
+                temp = temp->next;
+            if (temp != NULL) {
+                newPatient->next = temp->next;
+                newPatient->prev = temp;
+                if (temp->next != head) {
+                    temp->next->prev = newPatient;
+                } else {
+                    head->prev = newPatient;
+                }
+                temp->next = newPatient;
+            }
+        }
+    }
+
+    // DELETE at beginning
+    printf("Delete patient at beginning (y/n)? ");
+    scanf(" %c", &ch);
+    if ((ch == 'y' || ch == 'Y') && head != NULL) {
+        ptr = head;
+        if (head->next == head) {
+            head = NULL;
+        } else {
+            head->next->prev = head->prev;
+            head->prev->next = head->next;
+            head = head->next;
+        }
+        free(ptr);
+    }
+
+    // DELETE at end
+    printf("Delete patient at end (y/n)? ");
+    scanf(" %c", &ch);
+    if ((ch == 'y' || ch == 'Y') && head != NULL) {
+        temp = head;
+        while (temp->next != head)  // Traverse to the second last node
+            temp = temp->next;
+        if (temp != head) {
+            ptr = temp->next;
+            temp->next = head;
+            head->prev = temp;
+            free(ptr);
+        } else {  // If only one node exists
+            free(head);
+            head = NULL;
+        }
+    }
+
+    // DELETE at any position
+    printf("Delete patient at any position (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        printf("Enter position: ");
+        scanf("%d", &pos);
+        temp = head;
+        for (i = 1; i < pos && temp != NULL; i++)
+            temp = temp->next;
+        if (temp != NULL) {
+            if (temp->next != head) {
+                ptr = temp->next;
+                temp->next = temp->next->next;
+                temp->next->prev = temp;
+                free(ptr);
+            } else {  // If deleting the last node
+                temp->prev->next = head;
+                head->prev = temp->prev;
+                free(temp);
+            }
+        }
+    }
+
+    // SEARCH
+    printf("Enter Patient ID to search: ");
+    scanf("%d", &searchId);
+    temp = head;
+    int found = 0;
+    if (head != NULL) {
+        do {
+            if (temp->id == searchId) {
+                printf("Patient Found: ID: %d | Name: %s | Age: %d | Disease: %s\n",
+                       temp->id, temp->name, temp->age, temp->disease);
+                found = 1;
+                break;
+            }
+            temp = temp->next;
+        } while (temp != head);
+    }
+    if (!found)
+        printf("Patient not found.\n");
+
+    // UPDATE Patient details by ID
+    printf("\nDo you want to update a patient's details by ID (y/n)? ");
+    scanf(" %c", &ch);
+    if (ch == 'y' || ch == 'Y') {
+        printf("Enter Patient ID to update: ");
+        scanf("%d", &searchId);
+        temp = head;
+        while (temp != NULL) {
+            if (temp->id == searchId) {
+                printf("Current details - ID: %d | Name: %s | Age: %d | Disease: %s\n",
+                       temp->id, temp->name, temp->age, temp->disease);
+                printf("Enter new Name: ");
+                scanf(" %[^\n]", temp->name);
+                printf("Enter new Age: ");
+                scanf("%d", &temp->age);
+                printf("Enter new Disease: ");
+                scanf(" %[^\n]", temp->disease);
+                printf("Patient details updated.\n");
+                found = 1;
+                break;
+            }
+            temp = temp->next;
+            if (temp == head) break;
+        }
+        if (!found)
+            printf("Patient ID not found!\n");
+    }
+
+    // SORT by ID
+    struct Patient *t1, *t2;
+    for (t1 = head; t1 != NULL && t1->next != head; t1 = t1->next) {
+        for (t2 = t1->next; t2 != head; t2 = t2->next) {
+            if (t1->id > t2->id) {
+                // Swap all patient data
+                int tempId = t1->id;
+                char tempName[50], tempDisease[50];
+                int tempAge = t1->age;
+                strcpy(tempName, t1->name);
+                strcpy(tempDisease, t1->disease);
+
+                t1->id = t2->id;
+                t1->age = t2->age;
+                strcpy(t1->name, t2->name);
+                strcpy(t1->disease, t2->disease);
+
+                t2->id = tempId;
+                t2->age = tempAge;
+                strcpy(t2->name, tempName);
+                strcpy(t2->disease, tempDisease);
+            }
+        }
+    }
+
+    // FINAL DISPLAY
+    printf("\nSorted Patient List:\n");
+    if (head != NULL) {
+        temp = head;
+        do {
+            printf("ID: %d | Name: %s | Age: %d | Disease: %s\n",
+                   temp->id, temp->name, temp->age, temp->disease);
+            temp = temp->next;
+        } while (temp != head);
+    }
+
+    break;
+}
+
+//exit
+ case 5:
+            printf("Exiting program. Goodbye!\n");
+            exit(0);
+    default:
+        printf("Invalid choice.\n");
+    }
+
+    return 0;
+}
